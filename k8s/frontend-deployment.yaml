@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubehire-frontend
+  labels:
+    app: kubehire-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubehire-frontend
+  template:
+    metadata:
+      labels:
+        app: kubehire-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: kubehire-frontend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubehire-frontend-svc
+spec:
+  type: LoadBalancer # Exposes the UI to the real world
+  selector:
+    app: kubehire-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
